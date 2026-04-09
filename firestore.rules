@@ -1,0 +1,107 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.admin == true ||
+        request.auth.token.super_admin == true
+      );
+    }
+
+    function isValidUserDocUpdate() {
+      return !("role" in request.resource.data.diff(resource.data).changedKeys()) &&
+        !("secretCode" in request.resource.data.diff(resource.data).changedKeys());
+    }
+
+    match /users/{uid} {
+      allow create: if isOwner(uid);
+      allow read: if isOwner(uid) || resource.data.isPublic == true;
+      allow update: if isOwner(uid) && isValidUserDocUpdate();
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /{collection}/{docId} {
+      allow read, write: if false;
+    }
+
+    match /prompts/{promptId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /video_categories/{id} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /videos/{id} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /academy_files/{id} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /admin_settings/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /feedback/{id} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /chat_rooms/{roomId} {
+      allow read: if isSignedIn() && (
+        resource.data.type == "global" ||
+        request.auth.uid in resource.data.members
+      );
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin() || (
+        isSignedIn() && request.auth.uid in resource.data.members
+      );
+    }
+
+    match /messages/{messageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || (
+        isSignedIn() && resource.data.userId == request.auth.uid
+      );
+    }
+
+    match /typing_status/{id} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /user_status/{uid} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(uid);
+    }
+
+    match /unread_counts/{id} {
+      allow read, write: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /chat_usage/{id} {
+      allow read, write: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /{collName=custom_links|notes|projects|tasks|favorites|project_progress|daily_stats|user_activity|session_logs|recent_prompts|user_video_progress|certificates}/{id} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

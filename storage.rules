@@ -1,0 +1,46 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.admin == true ||
+        request.auth.token.super_admin == true
+      );
+    }
+
+    function isSafeImage() {
+      return request.resource != null &&
+        request.resource.size < 2 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/(jpeg|jpg|png|webp|gif)');
+    }
+
+    function isSafeChatFile() {
+      return request.resource != null &&
+        request.resource.size < 10 * 1024 * 1024 &&
+        request.resource.contentType.matches('(image/.*|audio/.*|video/mp4|application/pdf|text/plain)');
+    }
+
+    match /avatars/{uid} {
+      allow read: if true;
+      allow write: if isOwner(uid) && isSafeImage();
+    }
+
+    match /chat_uploads/{roomId}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isSafeChatFile();
+      allow delete: if isSignedIn();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
