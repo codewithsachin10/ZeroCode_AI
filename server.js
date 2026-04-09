@@ -1,11 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { initializeApp as initializeAdminApp, cert, getApps } from 'firebase-admin/app';
 import { getAuth as getAdminAuth } from 'firebase-admin/auth';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
+// Failover for local dev if .env is named .env.local
 dotenv.config({ path: '.env.local' });
 
 const {
@@ -74,6 +81,7 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '20kb' }));
 
+// AI Chat Endpoint
 app.post('/api/chat', async (req, res) => {
   const authHeader = req.headers.authorization || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -159,7 +167,15 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-const port = process.env.CHAT_SERVER_PORT || 4000;
+// Serve static files from the Vite build directory
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Handle SPA routing - return index.html for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+const port = process.env.PORT || process.env.CHAT_SERVER_PORT || 4000;
 app.listen(port, () => {
-  console.log(`Chat backend listening on http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
