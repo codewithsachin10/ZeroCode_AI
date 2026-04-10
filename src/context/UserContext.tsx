@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { db, auth } from '@/lib/firebase';
+import { handlePlatformError } from '@/lib/error-handler';
 import { collection, query, where, onSnapshot, limit, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
@@ -33,8 +34,8 @@ interface UserContextType {
   activity: Activity[];
   certificates: Certificate[];
   dailyStats: any | null;
-  loading: boolean;
   isAdmin: boolean;
+  error: string | null;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -49,6 +50,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [dailyStats, setDailyStats] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, (currentUser) => {
@@ -62,6 +64,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setCertificates([]);
         setDailyStats(null);
         setLoading(false);
+        setError(null);
       }
     });
 
@@ -88,7 +91,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
          }
          setProfile({ uid: d.id, ...data } as UserData);
        }
-    }, (e) => console.error("Profile Mesh Sync Error:", e)));
+    }, (e) => {
+       const msg = handlePlatformError(e, "Profile Mesh");
+       setError(msg);
+    }));
 
     // 2. Projects Listener
     unsubs.push(onSnapshot(query(collection(db, "projects"), where("userId", "==", userId)), (snap) => {
@@ -96,12 +102,18 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
          .map(d => ({ id: d.id, ...d.data() } as Project))
          .sort((a, b) => (b.updatedAt?.toMillis?.() || 0) - (a.updatedAt?.toMillis?.() || 0))
        );
-    }, (e) => console.error("Project Matrix Sync Error:", e)));
+    }, (e) => {
+       const msg = handlePlatformError(e, "Project Matrix");
+       setError(msg);
+    }));
 
     // 3. Tasks Listener
     unsubs.push(onSnapshot(query(collection(db, "tasks"), where("userId", "==", userId)), (snap) => {
        setTasks(snap.docs.map(d => ({ id: d.id, ...d.data() } as Task)));
-    }, (e) => console.error("Task Operations Sync Error:", e)));
+    }, (e) => {
+       const msg = handlePlatformError(e, "Task Operations");
+       setError(msg);
+    }));
 
     // 4. Notes Listener
     unsubs.push(onSnapshot(query(collection(db, "notes"), where("userId", "==", userId)), (snap) => {
@@ -151,7 +163,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       certificates,
       dailyStats,
       loading,
-      isAdmin
+      isAdmin,
+      error
     }}>
       {children}
     </UserContext.Provider>

@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff, Rocket, Zap, Sparkles, CheckCircle2, Loader2 } from "lucide-react";
+import { handlePlatformError, validateForm } from "@/lib/error-handler";
 import AppLoader from "@/components/ui/AppLoader";
 import { auth, db } from "@/lib/firebase";
 import { generateSecretCode } from "@/lib/utils";
@@ -21,12 +22,9 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    const validationError = validateForm({ name, email, password });
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
     setLoading(true);
@@ -64,8 +62,7 @@ const Signup = () => {
       }, 2500);
 
     } catch (error: any) {
-      console.error("Signup dispatch error:", error);
-      toast.error(error.message || "Failed to create account");
+      handlePlatformError(error, "Signup Flow");
       setLoading(false);
     }
   };

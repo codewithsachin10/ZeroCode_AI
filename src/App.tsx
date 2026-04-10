@@ -67,8 +67,7 @@ const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
+        <Toaster position="top-right" expand={false} visibleToasts={3} />
         <BrowserRouter>
           <UserProvider>
             <AcademyProvider>

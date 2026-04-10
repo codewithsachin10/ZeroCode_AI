@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff, CheckCircle2, Loader2, Sparkles } from "lucide-react";
+import { handlePlatformError, validateForm } from "@/lib/error-handler";
 import AppLoader from "@/components/ui/AppLoader";
 import { auth, db } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -21,8 +22,9 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
+    const validationError = validateForm({ email, password });
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
     setLoading(true);
@@ -48,8 +50,7 @@ const Login = () => {
       }, 2500);
 
     } catch (error: unknown) {
-      console.error("Login submission error:", error);
-      toast.error("Failed to login");
+      handlePlatformError(error, "Login Flow");
     } finally {
       if (!success) setLoading(false);
     }
