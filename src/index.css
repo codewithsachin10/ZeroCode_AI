@@ -39,6 +39,11 @@
     --text-primary: 0 0% 100%;
     --text-secondary: 0 0% 65%;
     --text-muted: 0 0% 45%;
+    
+    /* Loader Physics & Colors */
+    --duration: 3s;
+    --primary-rgba: rgba(34, 197, 94, 0.2);
+    --primary-light: hsl(142, 71%, 60%);
   }
 }
 
@@ -90,19 +95,14 @@
 
 /* From Uiverse.io by Timeless-Eve - Optimized for Visibility */
 .loader {
-  --duration: 2.5s;
-  --primary: hsl(var(--primary));
-  --primary-light: #0d2a1f;
-  --primary-rgba: rgba(34, 197, 94, 0);
   width: 200px;
   height: 240px;
   position: relative;
   transform-style: preserve-3d;
-  transform: scale(0.7);
+  transform: scale(0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 40px;
 }
 
 @media (max-width: 480px) {
@@ -143,9 +143,13 @@
   transform: rotateX(90deg) rotateY(0deg) translate(-48px, -120px) translateZ(100px) scale(0);
   width: 200px;
   height: 200px;
-  background: linear-gradient(45deg, var(--primary) 0%, var(--primary) 50%, var(--primary-light) 50%, var(--primary-light) 100%);
+  background: linear-gradient(45deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 50%, var(--primary-light) 50%, var(--primary-light) 100%);
   transform-style: preserve-3d;
-  animation: ground var(--duration) linear forwards infinite;
+  animation-name: ground;
+  animation-duration: var(--duration);
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
 }
 
 .loader .ground div:before,
@@ -159,10 +163,14 @@
   width: 156px;
   height: 300px;
   opacity: 0;
-  background: linear-gradient(var(--primary), var(--primary-rgba));
+  background: linear-gradient(hsl(var(--primary)), var(--primary-rgba));
   position: absolute;
   transform: rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--x), var(--y)) translateZ(var(--z));
-  animation: ground-shine var(--duration) linear forwards infinite;
+  animation-name: ground-shine;
+  animation-duration: var(--duration);
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
 }
 
 .loader .ground div:after {
@@ -176,17 +184,23 @@
   --x: 0;
   --y: 0;
   position: absolute;
-  animation: var(--duration) linear forwards infinite;
+  animation-duration: var(--duration);
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
   transform: translate(var(--x), var(--y));
 }
 
 .loader .box div {
-  background-color: var(--primary);
+  background-color: hsl(var(--primary));
   width: 48px;
   height: 48px;
   position: relative;
   transform-style: preserve-3d;
-  animation: var(--duration) ease forwards infinite;
+  animation-duration: var(--duration);
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
   transform: rotateY(-47deg) rotateX(-15deg) rotateZ(15deg) scale(0);
 }
 
