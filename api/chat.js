@@ -35,10 +35,12 @@ export default async function handler(req, res) {
 
   const {
     OPENROUTER_API_KEY,
+    VITE_FIREBASE_API_KEY,
   } = process.env;
 
-  if (!OPENROUTER_API_KEY) {
-    return res.status(500).json({ error: 'Server configuration error: Missing API Key' });
+  if (!OPENROUTER_API_KEY || !VITE_FIREBASE_API_KEY) {
+    console.error('Core configuration failure: Missing API Keys');
+    return res.status(500).json({ error: 'Server error. Please try later.' });
   }
 
   const authHeader = req.headers.authorization || '';

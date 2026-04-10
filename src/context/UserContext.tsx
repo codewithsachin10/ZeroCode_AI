@@ -123,13 +123,17 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
        );
     }, (e) => console.error("Knowledge Node Sync Error:", e)));
 
-    // 5. Activity Listener (High-Intensity)
-    unsubs.push(onSnapshot(query(collection(db, "user_activity"), where("userId", "==", userId), limit(20)), (snap) => {
+    // 5. Activity Listener (Client-Side Limiting to avoid Index Requirements)
+    unsubs.push(onSnapshot(query(collection(db, "user_activity"), where("userId", "==", userId)), (snap) => {
        setActivity(snap.docs
          .map(d => ({ id: d.id, ...d.data() } as Activity))
          .sort((a, b) => (b.timestamp?.toMillis?.() || 0) - (a.timestamp?.toMillis?.() || 0))
+         .slice(0, 20)
        );
-    }, (e) => console.error("Activity Stream Sync Error:", e)));
+    }, (e) => {
+       const msg = handlePlatformError(e, "Activity Matrix");
+       setError(msg);
+    }));
 
     // 6. Certificates Listener
     unsubs.push(onSnapshot(query(collection(db, "certificates"), where("userId", "==", userId)), (snap) => {
