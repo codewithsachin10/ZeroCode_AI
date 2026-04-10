@@ -1,26 +1,22 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
-  Zap, 
-  Terminal, 
-  Layers, 
-  Star, 
-  User, 
-  Settings, 
   BarChart3, 
-  MessageSquare, 
+  FolderRoot, 
+  CheckSquare, 
+  Calendar as CalendarIcon, 
+  Trophy, 
+  FileText, 
+  Award, 
+  Star, 
+  Link2, 
+  User, 
   ShieldCheck, 
   LogOut, 
   ChevronLeft, 
-  Menu,
-  Sparkles,
   Search,
-  HardDrive
+  Zap
 } from "lucide-react";
-import { useUser } from "@/context/UserContext";
-import { auth } from "@/lib/firebase";
-import { signOut } from "firebase/auth";
-import { toast } from "sonner";
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -28,14 +24,18 @@ const Sidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { label: "Intelligence Grid", icon: Layers, href: "/prompts", group: "Explore" },
-    { label: "Learn Hub", icon: Zap, href: "/learn", group: "Explore" },
-    { label: "Real-time Chat", icon: MessageSquare, href: "/chat", group: "Explore" },
-    { label: "Saved Nodes", icon: Star, href: "/favorites", group: "Explore" },
-    { label: "Tools Node", icon: HardDrive, href: "/tools", group: "Explore" },
-    { label: "Developer Identity", icon: User, href: "/account", group: "Personal" },
-    { label: "System Metrics", icon: BarChart3, href: "/dashboard", group: "Personal" },
-    { label: "Command Center", icon: ShieldCheck, href: "/admin", show: isAdmin, group: "Admin" },
+    { label: "Overview", icon: BarChart3, href: "/dashboard", group: "Main" },
+    { label: "Projects", icon: FolderRoot, href: "/prompts", group: "Main" },
+    { label: "Tasks", icon: CheckSquare, href: "/learn", group: "Main" },
+    { label: "Calendar", icon: CalendarIcon, href: "/calendar", group: "Main" },
+    { label: "Leaderboard", icon: Trophy, href: "/leaderboard", group: "Social" },
+    { label: "Notes", icon: FileText, href: "/notes", group: "Social" },
+    { label: "Certificates", icon: Award, href: "/certificates", group: "Social" },
+    { label: "Saved", icon: Star, href: "/favorites", group: "Personal" },
+    { label: "Links", icon: Link2, href: "/links", group: "Personal" },
+    { label: "Profile", icon: User, href: "/account", group: "Personal" },
+    { label: "Security", icon: ShieldCheck, href: "/security", group: "Personal" },
+    { label: "Admin", icon: ShieldCheck, href: "/admin", show: isAdmin, group: "System" },
   ];
 
   const handleLogout = async () => {
@@ -55,29 +55,29 @@ const Sidebar = () => {
           </div>
           {!collapsed && (
             <div className="flex flex-col animate-in fade-in slide-in-from-left-2 duration-700">
-               <span className="text-xl font-black uppercase tracking-tighter text-foreground leading-none">VibeCode Academy</span>
-               <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary mt-1 italic">Learning Engine v1.0</span>
+               <span className="text-xl font-black uppercase tracking-tighter text-foreground leading-none">ZeroCode.AI</span>
+               <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary mt-1 italic">Dashboard v4.2</span>
             </div>
           )}
         </Link>
       </div>
 
-      {/* Global Search Node */}
+      {/* Global Search */}
       {!collapsed && (
         <div className="p-6">
            <div className="glass bg-black/40 border border-white/5 rounded-2xl flex items-center px-4 py-3 gap-3 group focus-within:border-primary/40 transition-all">
               <Search size={14} className="text-text-muted group-focus-within:text-primary" />
               <input 
-                placeholder="Scan Node..." 
+                placeholder="Search..." 
                 className="bg-transparent border-none outline-none text-[10px] font-bold uppercase tracking-widest text-foreground placeholder:text-text-muted/30 w-full"
               />
            </div>
         </div>
       )}
 
-      {/* Navigation Nodes */}
+      {/* Navigation */}
       <nav className="flex-1 overflow-y-auto pt-4 px-4 space-y-8 scrollbar-hide">
-         {["Explore", "Personal", "Admin"].map(group => {
+         {["Main", "Social", "Personal", "System"].map(group => {
             const items = menuItems.filter(item => item.group === group && (item.show !== false));
             if (items.length === 0) return null;
 
@@ -85,7 +85,7 @@ const Sidebar = () => {
               <div key={group} className="space-y-2">
                  {!collapsed && (
                    <span className="text-[8px] font-black uppercase tracking-[0.3em] text-text-muted/40 px-4 mb-4 block">
-                      {group} Node
+                      {group}
                    </span>
                  )}
                  {items.map(item => {

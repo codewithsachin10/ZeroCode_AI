@@ -59,7 +59,7 @@ export default function AdminLayout() {
       {/* Sidebar Integration */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#0B0B0B] border-r border-white/5 transition-transform transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static flex flex-col`}>
         <div className="h-16 flex items-center px-8 border-b border-white/5 relative bg-[#0B0B0B]">
-          <Link to="/admin" className="text-base font-bold uppercase tracking-widest text-primary">VibeCode<span className="text-white"> Academy</span></Link>
+          <Link to="/admin" className="text-base font-bold uppercase tracking-widest text-primary">ZeroCode<span className="text-white"> AI</span></Link>
           <button 
             className="md:hidden absolute right-4 p-2 text-text-muted hover:text-white transition-all"
             onClick={() => setMobileMenuOpen(false)}
@@ -92,13 +92,17 @@ export default function AdminLayout() {
           })}
         </div>
 
-        <div className="p-4 border-t border-white/5 bg-[#0B0B0B]">
+        <div className="p-8 border-t border-white/5 bg-[#0B0B0B]">
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-2 w-full text-left rounded-lg text-text-muted hover:text-red-500 hover:bg-red-500/5 transition-all group"
+            className="tactile-btn tactile-btn-red w-full"
           >
-            <LogOut size={14} />
-            <span className="font-bold text-[10px] uppercase tracking-widest">Logout</span>
+            <span className="btn-shadow"></span>
+            <span className="btn-edge"></span>
+            <span className="btn-front flex items-center justify-center gap-3">
+               <LogOut size={14} />
+               Logout
+            </span>
           </button>
         </div>
       </aside>
@@ -119,7 +123,14 @@ export default function AdminLayout() {
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+             <Link to="/">
+                <button className="tactile-btn tactile-btn-green scale-75 origin-right">
+                   <span className="btn-shadow"></span>
+                   <span className="btn-edge"></span>
+                   <span className="btn-front flex items-center gap-2">View Site</span>
+                </button>
+             </Link>
              <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-lg">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                 <span className="text-[9px] font-bold text-primary uppercase tracking-widest">Online</span>

@@ -98,14 +98,14 @@ const HackathonMode = () => {
           </div>
 
           {/* Upcoming Hackathons */}
-          <div className="max-w-5xl mx-auto mb-16">
+          <div className="max-w-7xl mx-auto mb-16">
             <h2 className="text-2xl font-bold mb-8 text-center">Upcoming Hackathons</h2>
             {loadingHackathons ? (
               <div className="glass rounded-xl p-8 text-center text-sm text-text-secondary">Loading upcoming hackathons...</div>
             ) : upcomingHackathons.length === 0 ? (
               <div className="glass rounded-xl p-8 text-center text-sm text-text-secondary">No upcoming hackathons posted yet.</div>
             ) : (
-              <div className="grid md:grid-cols-2 gap-5">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {upcomingHackathons.map((event) => (
                   <div key={event.id} className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0f0f0f] shadow-[0_20px_60px_rgba(0,0,0,0.45)] transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/45 hover:shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
                     <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-70 animate-pulse" />
@@ -170,21 +170,23 @@ const HackathonMode = () => {
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-3">
                         <Link
                           to={`/hackathon/${event.id}`}
-                          className="inline-flex px-3 py-2 rounded-lg text-[10px] uppercase font-bold border border-primary/30 bg-primary/10 text-primary hover:bg-primary hover:text-black transition-all duration-300"
                         >
-                          Details
+                           <button className="neo-btn neo-btn-green">
+                              <span className="button_top">Details</span>
+                           </button>
                         </Link>
                         {event.hackathonLink && (
                           <a
                             href={event.hackathonLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex px-3 py-2 rounded-lg text-[10px] uppercase font-bold border border-white/15 bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
                           >
-                            Register
+                             <button className="neo-btn neo-btn-plain">
+                                <span className="button_top">Register</span>
+                             </button>
                           </a>
                         )}
                       </div>

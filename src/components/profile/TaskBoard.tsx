@@ -133,6 +133,8 @@ const TaskBoard = () => {
                   <div className="py-40 text-center bg-[#111]/30 border-2 border-dashed border-white/5 rounded-[64px] flex flex-col items-center justify-center space-y-8 animate-pulse">
                      <CheckCircle2 size={48} className="text-primary opacity-20" />
                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted italic opacity-40">No pending task nodes detected in current mesh.</p>
+                     <p className="text-[10px] font-black uppercase tracking-[0.4em] text-text-muted opacity-40">No pending task nodes detected in current mesh.</p>
+                     <p className="text-[11px] font-black uppercase tracking-[0.2em] text-text-muted italic opacity-40">No pending task nodes detected in current mesh.</p>
                   </div>
                )}
             </div>
@@ -141,7 +143,7 @@ const TaskBoard = () => {
          {completed.length > 0 && (
             <div className="pt-20 space-y-8">
                <div className="flex items-center gap-6 px-4">
-                  <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-primary/40 italic">Operation Logs ({completed.length})</h3>
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary/40">Operation Logs ({completed.length})</h3>
                   <div className="h-px flex-1 bg-primary/5" />
                </div>
                <div className="grid lg:grid-cols-2 gap-4">
@@ -152,8 +154,7 @@ const TaskBoard = () => {
                               <CheckCircle2 size={24} strokeWidth={3} />
                            </button>
                            <div>
-                              <h4 className="text-sm font-black uppercase tracking-tight line-through decoration-primary/20 text-white group-hover:text-primary transition-colors italic">{task.title}</h4>
-                              <p className="text-[8px] font-black text-text-muted uppercase tracking-widest mt-1">Status: Concluded</p>
+                              <p className="text-[11px] font-black text-text-muted uppercase tracking-[0.2em] mt-1">Status: Concluded</p>
                            </div>
                         </div>
                         <button onClick={() => deleteTask(task.id)} className="p-3 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 size={16} /></button>

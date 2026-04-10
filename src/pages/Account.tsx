@@ -199,19 +199,19 @@ const Account = () => {
       <div className="pt-16 min-h-screen bg-[#0B0B0B]">
         <div className="flex h-[calc(100vh-64px)] overflow-hidden">
           
-          <aside className="w-64 h-full border-r border-white/5 flex flex-col bg-[#0B0B0B] z-30">
+          <aside className="fixed top-16 left-0 w-64 h-[calc(100vh-64px)] border-r border-white/5 flex flex-col bg-[#0B0B0B] z-30">
              <div className="h-16 flex items-center px-8 border-b border-white/5 shrink-0">
                 <h1 className="text-xs font-bold uppercase tracking-widest text-primary">Account Hub</h1>
              </div>
 
-             <nav className="flex-1 py-4 px-4 space-y-1 overflow-y-auto">
+             <nav className="flex-1 py-4 px-4 space-y-1 overflow-y-auto scrollbar-hide">
                 {tabs.map(tab => (
                    <button
                      key={tab.id}
                     onClick={() => setActiveTab(tab.id as AccountTab)}
                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${
                        activeTab === tab.id 
-                         ? 'bg-primary text-black' 
+                         ? 'bg-primary text-black shadow-lg shadow-primary/10' 
                          : 'text-text-muted hover:bg-white/5 hover:text-white'
                      }`}
                    >
@@ -221,23 +221,27 @@ const Account = () => {
                 ))}
              </nav>
 
-             <div className="p-4 border-t border-white/5 shrink-0">
+             <div className="p-8 border-t border-white/5 shrink-0">
                 <button 
                   onClick={async () => {
                     await signOut(auth);
                     localStorage.removeItem("chatbot_hidden");
                     navigate("/");
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[10px] font-bold uppercase tracking-widest text-text-muted hover:text-red-500 hover:bg-red-500/5 transition-all"
+                  className="tactile-btn tactile-btn-red w-full"
                 >
-                   <LogOut size={14} />
-                   Logout
+                   <span className="btn-shadow"></span>
+                   <span className="btn-edge"></span>
+                   <span className="btn-front flex items-center justify-center gap-3">
+                      <LogOut size={14} />
+                      Logout
+                   </span>
                 </button>
              </div>
           </aside>
 
-          <main className="flex-1 overflow-y-auto p-8 bg-[#0B0B0B]">
-             <div className="max-w-4xl mx-auto pb-40 space-y-8">
+          <main className="flex-1 ml-64 overflow-y-auto p-12 bg-[#0B0B0B]">
+             <div className="w-full pb-40 space-y-12">
                 
                 {activeTab === "overview" && <DashboardInsights />}
                 {activeTab === "projects" && <ProjectMatrix />}

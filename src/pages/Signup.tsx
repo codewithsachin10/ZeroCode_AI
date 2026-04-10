@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff, Rocket, Zap, Sparkles, CheckCircle2, Loader2 } from "lucide-react";
-import { MorphingSquare } from "@/components/ui/morphing-square";
+import AppLoader from "@/components/ui/AppLoader";
 import { auth, db } from "@/lib/firebase";
 import { generateSecretCode } from "@/lib/utils";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
@@ -83,7 +83,7 @@ const Signup = () => {
                 <h2 className="text-3xl font-bold text-white mb-2 italic">Identity Initialised</h2>
                 <p className="text-lg text-text-secondary opacity-60 mb-8 font-medium">Welcome, <span className="text-primary font-bold">{name}</span></p>
                 <div className="py-6 flex justify-center">
-                   <MorphingSquare message="Deploying Developer Node..." />
+                   <AppLoader label="Deploying Developer Node..." />
                 </div>
              </div>
           ) : (
@@ -139,14 +139,18 @@ const Signup = () => {
                    </div>
                  </div>
 
-                 <Button 
+                 <button 
                    type="submit" 
-                   className="w-full h-14 bg-primary hover:bg-primary/90 text-black font-black rounded-xl text-base border-2 border-black/20 shadow-[0_4px_14px_rgba(34,197,94,0.3)] transition-all flex items-center justify-center group" 
+                   className="tactile-btn tactile-btn-green w-full mt-4" 
                    disabled={loading}
                  >
-                   {loading ? <Loader2 className="animate-spin mr-2" /> : <Zap className="mr-2 group-hover:rotate-12 transition-transform" size={18} />}
-                   {loading ? "INITIALIZING..." : "REGISTER IDENTITY"}
-                 </Button>
+                    <span className="btn-shadow"></span>
+                    <span className="btn-edge"></span>
+                    <span className="btn-front py-4 flex items-center justify-center gap-3">
+                       {loading ? <Loader2 className="animate-spin" size={18} /> : <Zap size={18} />}
+                       {loading ? "INITIALIZING..." : "REGISTER IDENTITY"}
+                    </span>
+                 </button>
                </form>
 
                <div className="text-center mt-6 pt-4 border-t border-white/5">

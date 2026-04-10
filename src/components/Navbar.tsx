@@ -74,10 +74,14 @@ const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                    </Link>
                 )}
                 <Link to="/account">
-                   <Button variant="hero" size="sm" className="text-[10px] font-black uppercase tracking-widest px-6 h-10 shadow-xl shadow-primary/20 rounded-xl gap-2">
-                      <Settings size={14} />
-                      Dashboard
-                   </Button>
+                   <button className="tactile-btn tactile-btn-green scale-[0.85] origin-right">
+                      <span className="btn-shadow"></span>
+                      <span className="btn-edge"></span>
+                      <span className="btn-front flex items-center gap-2">
+                         <LayoutDashboard size={14} />
+                         Dashboard
+                      </span>
+                   </button>
                 </Link>
                 <button 
                   onClick={handleLogout}
@@ -87,14 +91,22 @@ const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                 </button>
              </div>
           ) : (
-             <>
-                <Link to="/login">
-                  <Button variant="ghost" size="sm" className="text-xs font-bold uppercase tracking-widest px-6 h-10 border border-border/40 hover:border-primary/40 transition-all rounded-xl">Log in</Button>
-                </Link>
-                <Link to="/signup">
-                  <Button variant="hero" size="sm" className="text-xs font-bold uppercase tracking-widest px-8 shadow-xl shadow-primary/20 h-10 rounded-xl">Get Started</Button>
-                </Link>
-             </>
+              <>
+                 <Link to="/login">
+                    <button className="tactile-btn scale-75 origin-right mr-2">
+                       <span className="btn-shadow"></span>
+                       <span className="btn-edge bg-white/10"></span>
+                       <span className="btn-front bg-[#111] border border-white/10 px-6 py-2">Log in</span>
+                    </button>
+                 </Link>
+                 <Link to="/signup">
+                    <button className="tactile-btn tactile-btn-green scale-[0.85] origin-right">
+                       <span className="btn-shadow"></span>
+                       <span className="btn-edge"></span>
+                       <span className="btn-front px-8 py-2">Get Started</span>
+                    </button>
+                 </Link>
+              </>
           )}
         </div>
 
@@ -124,8 +136,12 @@ const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
             <div className="flex flex-col gap-3 mt-6 pt-6 border-t border-border/40">
               {user ? (
                  <>
-                    <Link to="/account" onClick={() => setMobileOpen(false)}>
-                       <Button variant="hero" className="w-full py-6 rounded-2xl text-xs font-bold uppercase tracking-widest">Dashboard</Button>
+                    <Link to="/account" onClick={() => setMobileOpen(false)} className="w-full">
+                       <button className="tactile-btn tactile-btn-green w-full">
+                          <span className="btn-shadow"></span>
+                          <span className="btn-edge"></span>
+                          <span className="btn-front py-4">Dashboard</span>
+                       </button>
                     </Link>
                     <Button 
                       variant="ghost" 

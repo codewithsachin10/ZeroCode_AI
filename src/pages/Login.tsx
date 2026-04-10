@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff, CheckCircle2, Loader2, Sparkles } from "lucide-react";
-import { MorphingSquare } from "@/components/ui/morphing-square";
+import AppLoader from "@/components/ui/AppLoader";
 import { auth, db } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -67,8 +67,8 @@ const Login = () => {
                 </div>
                 <h2 className="text-3xl font-bold text-white mb-3">Logged in</h2>
                 <p className="text-lg text-text-secondary opacity-60 mb-8">Welcome, {userName}</p>
-                <div className="py-6 flex justify-center">
-                   <MorphingSquare message="Synchronizing Node..." />
+                <div className="py-12 flex flex-col items-center justify-center">
+                   <AppLoader label="Fetching your details..." />
                 </div>
              </div>
           ) : (
@@ -112,13 +112,18 @@ const Login = () => {
                    </div>
                  </div>
 
-                 <Button 
+                 <button 
                    type="submit" 
-                   className="w-full h-12 bg-primary hover:bg-primary/90 text-black font-bold rounded-lg border-2 border-black/20" 
+                   className="tactile-btn tactile-btn-green w-full mt-4" 
                    disabled={loading}
                  >
-                   {loading ? "Authenticating..." : "Log In"}
-                 </Button>
+                    <span className="btn-shadow"></span>
+                    <span className="btn-edge"></span>
+                    <span className="btn-front py-3.5 flex items-center justify-center gap-3">
+                       {loading && <Loader2 className="animate-spin" size={16} />}
+                       {loading ? "AUTHENTICATING..." : "LOG IN"}
+                    </span>
+                 </button>
                </form>
 
                <div className="text-center mt-6">

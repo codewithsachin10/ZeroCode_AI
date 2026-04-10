@@ -44,34 +44,34 @@ const DashboardInsights = () => {
       
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-white/5">
          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary italic">Intelligence Sync: Active</span>
+            <div className="flex items-center gap-2">
+               <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+               <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">System Overview</span>
             </div>
-            <h1 className="text-6xl font-black tracking-tighter uppercase text-white italic">Node <span className="text-primary">Insights</span></h1>
-            <p className="text-text-muted font-bold text-xs italic opacity-60">Master Identity Cluster: <span className="text-white">v1.4.2_alpha</span></p>
+            <h1 className="text-5xl lg:text-6xl font-black tracking-tight uppercase text-white leading-none">Cloud <span className="text-primary opacity-90">Insights</span></h1>
+            <p className="text-text-muted font-medium text-xs opacity-50 italic">Identity: <span className="text-white italic">v4.2.0_stable</span></p>
          </div>
          
-         <div className="flex items-center gap-6 px-10 py-5 bg-[#111] border border-white/10 rounded-[32px] shadow-2xl relative group overflow-hidden">
+         <div className="flex items-center gap-6 px-8 py-5 bg-[#111] border border-white/10 rounded-[32px] shadow-2xl group overflow-hidden">
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <Clock className="text-primary opacity-60 group-hover:rotate-12 transition-transform" size={20} />
+            <Clock className="text-primary opacity-40 group-hover:rotate-12 transition-transform" size={20} />
             <div className="flex flex-col relative z-10">
-               <span className="text-[9px] font-black uppercase tracking-widest text-text-muted opacity-60 italic mb-1">Total System Uptime</span>
-               <span className="text-3xl font-black text-white tracking-tighter italic">{Math.round(profile?.totalTimeSpent || 0)} <span className="text-[10px] text-primary uppercase ml-1">MIN</span></span>
+               <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted opacity-40 mb-1">Total System Uptime</span>
+               <span className="text-2xl font-semibold text-white tracking-tight">{Math.round(profile?.totalTimeSpent || 0)} <span className="text-[10px] text-primary uppercase ml-1">min</span></span>
             </div>
          </div>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
          {statCards.map((card, idx) => (
-            <div key={idx} className="p-8 bg-[#111] border border-white/5 rounded-[40px] hover:border-primary/20 hover:bg-primary/[0.04] transition-all duration-500 group relative overflow-hidden shadow-xl">
+            <div key={idx} className="p-7 bg-[#111] border border-white/5 rounded-[40px] hover:border-primary/20 hover:bg-primary/[0.04] transition-all duration-500 group relative overflow-hidden shadow-xl">
                <div className="absolute inset-x-0 bottom-0 h-1 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-               <div className={`w-12 h-12 ${card.bg} ${card.color} rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 transition-transform`}>
-                  <card.icon size={22} />
+               <div className={`w-10 h-10 ${card.bg} ${card.color} rounded-xl flex items-center justify-center mb-5 border border-white/5 group-hover:scale-110 transition-transform`}>
+                  <card.icon size={18} />
                </div>
                <div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-2 opacity-50 group-hover:text-white group-hover:opacity-100 transition-all italic">{card.label}</p>
-                  <h3 className="text-3xl font-black text-white italic tracking-tight">{card.value}</h3>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-text-muted mb-1 opacity-40 group-hover:text-white group-hover:opacity-100 transition-all">{card.label}</p>
+                  <h3 className="text-2xl font-semibold text-white tracking-tight">{card.value}</h3>
                </div>
             </div>
          ))}

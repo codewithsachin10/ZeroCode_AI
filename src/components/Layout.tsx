@@ -1,6 +1,6 @@
+import AppLoader from "./ui/AppLoader";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import { MorphingSquare } from "./ui/morphing-square";
 import { useAdminSettings } from "@/hooks/useAdminSettings";
 import { AlertTriangle, Info, Zap, X } from "lucide-react";
 import { useState, useEffect, lazy, Suspense } from "react";
@@ -34,7 +34,7 @@ const Layout = ({ children, hideFooter = false, minimalNavbar = false }: { child
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <MorphingSquare message="Initializing Platform..." />
+        <AppLoader label="Initializing Platform..." />
       </div>
     );
   }

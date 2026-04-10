@@ -110,18 +110,22 @@ const ProjectMatrix = () => {
   if (userLoading) return (
     <div className="flex flex-col items-center justify-center h-[500px] gap-6">
        <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic animate-pulse">Syncing Build Matrix...</p>
+       <p className="text-xs font-black uppercase tracking-[0.2em] text-primary italic animate-pulse">Syncing Build Matrix...</p>
     </div>
   );
 
   return (
-    <div className="space-y-16 animate-in fade-in duration-700">
+    <div className="space-y-12 animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-10">
-         <div className="space-y-2">
-            <h2 className="text-4xl font-black tracking-tight uppercase text-white italic">Build Matrix</h2>
-            <p className="text-[10px] font-black text-text-muted uppercase tracking-widest italic opacity-60">Manage your high-velocity production nodes.</p>
+         <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Intelligence Repository</span>
+            </div>
+            <h1 className="text-5xl font-black tracking-tight uppercase text-white leading-none">Project <span className="text-primary opacity-90">Matrix</span></h1>
+            <p className="text-text-muted font-medium text-xs opacity-50">Architect and deploy your high-velocity production nodes.</p>
          </div>
-         <Button onClick={() => setShowNewModal(true)} className="h-20 px-12 rounded-[32px] bg-primary text-black font-black uppercase text-[10px] tracking-[0.3em] shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all gap-5">
+         <Button onClick={() => setShowNewModal(true)} className="h-20 px-12 rounded-[32px] bg-primary text-black font-black uppercase text-xs tracking-[0.2em] shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all gap-5">
             <Plus size={20} strokeWidth={3} /> Initialize Build Node
          </Button>
       </div>
@@ -133,13 +137,15 @@ const ProjectMatrix = () => {
                   <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-3xl pointer-events-none" />
                   
                   <div className="flex justify-between items-start mb-10 relative z-10">
-                     <div className="space-y-4 max-w-[70%]">
-                        <div className="flex items-center gap-3">
-                           <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                           <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary italic">Node: {project.id.slice(0, 8)}</span>
+                     <div className="space-y-12">
+                        <div className="space-y-4">
+                           <div className="flex items-center gap-3">
+                              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-primary italic">Node: {project.id.slice(0, 8)}</span>
+                           </div>
+                           <h3 className="text-5xl font-black tracking-tight text-white group-hover:text-primary transition-colors uppercase italic leading-none">{project.title}</h3>
                         </div>
-                        <h3 className="text-4xl font-black tracking-tight text-white group-hover:text-primary transition-colors uppercase italic leading-none">{project.title}</h3>
-                        <p className="text-[10px] text-text-muted font-black uppercase tracking-widest italic opacity-40 line-clamp-2">{project.description || "Deploying production logic..."}</p>
+                        <p className="text-xs text-text-muted font-black uppercase tracking-[0.2em] italic opacity-40 line-clamp-2">{project.description || "Deploying production logic..."}</p>
                      </div>
                      <div className="flex gap-3">
                         <button onClick={() => deleteProject(project.id)} className="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl text-text-muted hover:text-red-500 hover:bg-red-500/10 transition-all flex items-center justify-center active:scale-90" title="Retract Node"><Trash2 size={18} /></button>

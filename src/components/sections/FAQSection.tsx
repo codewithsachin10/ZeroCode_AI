@@ -53,8 +53,8 @@ const FAQSection = () => {
   }, [searchQuery, activeCategory]);
 
   return (
-    <section className="py-12 relative">
-      <div className="container-main">
+    <section className="py-12 relative w-full">
+      <div className="px-6 md:px-12">
         {/* Advanced Filter Bar */}
         <div className="max-w-4xl mx-auto mb-16 space-y-8">
            <div className="relative group">
@@ -83,40 +83,16 @@ const FAQSection = () => {
                  </div>
               </div>
            </div>
-        </div>
-
-        {filteredFaqs.length > 0 ? (
-          <div className="grid md:grid-cols-2 gap-4 max-w-6xl mx-auto">
-            {filteredFaqs.map((faq, index) => (
-              <div 
-                key={faq.question}
-                onMouseEnter={() => setActiveIndex(index)}
-                className={`glass rounded-2xl overflow-hidden border-border/40 transition-all duration-300 group cursor-pointer ${activeIndex === index ? 'bg-primary/[0.08] border-primary/20 ring-1 ring-primary/10 shadow-2xl shadow-primary/5' : 'hover:border-primary/20 hover:bg-surface/50'}`}
-              >
-                <div className="w-full flex items-center justify-between p-5 text-left">
-                  <div className="flex items-center gap-4">
-                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 ${activeIndex === index ? 'bg-primary text-primary-foreground scale-110 shadow-xl shadow-primary/20' : 'bg-surface border border-border text-text-muted group-hover:text-primary group-hover:scale-110'}`}>
-                        <faq.icon size={18} className={activeIndex === index ? "animate-pulse" : ""} />
-                     </div>
-                     <div>
-                       <h3 className={`text-sm font-bold tracking-tight transition-all duration-300 ${activeIndex === index ? 'text-foreground translate-x-1' : 'text-text-secondary group-hover:text-foreground group-hover:translate-x-1'}`}>
-                         {faq.question}
-                       </h3>
-                       <span className="text-[9px] uppercase font-black tracking-widest text-text-muted/40 group-hover:text-primary transition-colors">{faq.category}</span>
-                     </div>
+        </div>        {filteredFaqs.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mx-auto">
+            {filteredFaqs.map((faq) => (
+              <div key={faq.question} className="faq-container noselect">
+                <div className="faq-card">
+                  <div className="faq-question">
+                     {faq.question}
                   </div>
-                  <div className={`transition-all duration-500 ${activeIndex === index ? 'rotate-90 text-primary scale-125' : 'text-text-muted opacity-50'}`}>
-                     <ChevronRight size={16} />
-                  </div>
-                </div>
-                
-                <div 
-                  className={`overflow-hidden transition-all duration-500 ease-in-out ${activeIndex === index ? 'max-h-[250px] opacity-100 pb-6 px-6 pt-0' : 'max-h-0 opacity-0'}`}
-                >
-                  <div className="pl-14">
-                    <p className="text-sm text-text-secondary leading-relaxed border-l-2 border-primary/30 pl-4 italic">
-                      {faq.answer}
-                    </p>
+                  <div className="faq-answer">
+                     {faq.answer}
                   </div>
                 </div>
               </div>

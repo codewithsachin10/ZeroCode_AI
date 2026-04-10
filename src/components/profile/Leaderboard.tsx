@@ -64,19 +64,17 @@ const Leaderboard = () => {
   );
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-12 font-sans">
       
       {/* High-Velocity Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 pb-10 border-b border-white/5">
          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-               <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 shadow-2xl relative">
-                  <div className="absolute inset-0 bg-primary/5 blur-xl animate-pulse" />
-                  <Trophy size={24} className="text-primary group-hover:scale-125 transition-transform" />
-               </div>
-               <h2 className="text-5xl font-black tracking-tighter uppercase text-white italic">Global <span className="text-primary italic">Mesh</span></h2>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-primary" />
+              <span className="text-[12px] font-semibold uppercase tracking-[0.3em] text-primary">Global Rankings</span>
             </div>
-            <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] italic opacity-60">High-velocity ranking of the top-performing developer nodes in the academy.</p>
+            <h1 className="text-6xl lg:text-8xl font-black tracking-tight uppercase text-white">Elite <span className="text-primary">Leaderboard</span></h1>
+            <p className="text-text-muted font-medium text-sm opacity-60">Architects of the most optimized agentic workflows.</p>
          </div>
          
          <div className="flex bg-[#111] p-2 rounded-[32px] border border-white/10 shadow-2xl shadow-primary/5 relative group overflow-hidden">

@@ -21,22 +21,22 @@ const Certificates = () => {
   );
 
   return (
-    <div className="space-y-16 animate-in fade-in duration-700">
+    <div className="space-y-16 animate-in fade-in duration-700 font-outfit">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 pb-8 border-b border-white/5">
-         <div className="space-y-3">
+         <div className="space-y-4">
             <div className="flex items-center gap-3">
-               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#22C55E]" />
-               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">Global Credentials</span>
+               <div className="w-2 h-2 rounded-full bg-primary" />
+               <span className="text-[12px] font-semibold uppercase tracking-[0.3em] text-primary">Credential Registry</span>
             </div>
-            <h1 className="text-6xl font-black tracking-tighter uppercase text-white italic">Identity <span className="text-primary">Vault</span></h1>
-            <p className="text-text-muted font-black text-[10px] uppercase tracking-widest italic opacity-60">Verified production achievements and cognitive pathway nodes.</p>
+            <h1 className="text-6xl lg:text-8xl font-black tracking-tight uppercase text-white">My <span className="text-primary">Certificates</span></h1>
+            <p className="text-text-muted font-medium text-sm opacity-60">Verified proof of your high-velocity technical mastery.</p>
          </div>
          <div className="flex items-center gap-6 px-10 py-5 bg-[#111] border border-white/10 rounded-[32px] shadow-2xl relative group overflow-hidden">
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <Award className="text-primary opacity-60 group-hover:rotate-12 transition-transform" size={24} />
             <div className="flex flex-col relative z-10">
-               <span className="text-[9px] font-black uppercase tracking-widest text-text-muted opacity-60 italic mb-1">Total Achievements</span>
-               <span className="text-3xl font-black text-white tracking-tighter italic">{certificates.length} <span className="text-[10px] text-primary uppercase ml-1">Nodes</span></span>
+               <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted opacity-60 mb-1">Total Achievements</span>
+               <span className="text-3xl font-black text-white tracking-tighter">{certificates.length} <span className="text-[10px] text-primary uppercase ml-1">Nodes</span></span>
             </div>
          </div>
       </div>

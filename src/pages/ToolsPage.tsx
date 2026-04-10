@@ -63,65 +63,70 @@ const ToolsPage = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {tools.map((tool) => (
-              <div 
-                key={tool.name} 
-                className="glass rounded-[32px] p-8 border-border/40 hover:border-primary/40 transition-all duration-500 group flex flex-col relative overflow-hidden h-full hover:-translate-y-4 hover:shadow-[0_20px_50px_rgba(34,197,94,0.1)]"
-              >
-                {/* Floating shine effect */}
-                <div className="absolute -inset-x-20 top-[-100%] h-[200%] w-[300px] bg-white opacity-[0.03] blur-3xl group-hover:top-[100%] transition-all duration-1000 rotate-45 pointer-events-none"></div>
-                
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-white p-3 flex items-center justify-center shadow-2xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 overflow-hidden border border-border">
-                      <img 
-                        src={`https://www.google.com/s2/favicons?sz=128&domain=${tool.domain}`} 
-                        alt={`${tool.name} logo`}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-extrabold text-2xl tracking-tighter group-hover:text-primary transition-colors">{tool.name}</h3>
-                      <span className={`text-[9px] uppercase font-black tracking-widest px-2 py-0.5 rounded-lg border ${categoryStyles[tool.category] || "bg-surface text-text-muted"}`}>
-                        {tool.category}
-                      </span>
-                    </div>
-                  </div>
-                  <a 
-                    href={tool.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/40 transition-all shrink-0 group-hover:rotate-45"
-                  >
-                    <ExternalLink size={20} />
-                  </a>
-                </div>
-
-                <p className="text-sm text-text-secondary leading-relaxed mb-10 flex-1 group-hover:text-foreground transition-colors font-medium">
-                  {tool.description}
-                </p>
-
-                <div className="space-y-5 pt-8 border-t border-border/40">
-                  <div className="flex gap-4 group/item hover:translate-x-2 transition-transform">
-                    <div className="mt-1 text-primary shrink-0 transition-transform group-hover/item:scale-125"><CheckCircle2 size={18} /></div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block mb-1">Elite For</span>
-                      <p className="text-[11px] text-foreground/80 font-bold leading-tight">{tool.bestFor}</p>
-                    </div>
-                  </div>
+              <div key={tool.name} className="h-[500px] tool-container noselect">
+                <div className="tool-canvas">
+                  {[...Array(25)].map((_, i) => (
+                    <div key={i} className={`tool-tracker tr-${i + 1}`}></div>
+                  ))}
                   
-                  <div className="flex gap-4 group/item hover:translate-x-2 transition-transform duration-300">
-                    <div className="mt-1 text-text-secondary shrink-0 transition-transform group-hover/item:scale-125"><Lightbulb size={18} /></div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block mb-1">Vibe Tip</span>
-                      <p className="text-[11px] text-text-secondary font-medium italic leading-tight">{tool.beginnerUse}</p>
+                  <div className="tool-card">
+                    {/* Floating shine effect */}
+                    <div className="absolute -inset-x-20 top-[-100%] h-[200%] w-[300px] bg-white opacity-[0.03] blur-3xl group-hover:top-[100%] transition-all duration-1000 rotate-45 pointer-events-none"></div>
+                    
+                    <div className="flex items-center justify-between mb-8 tool-card-content">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-white p-3 flex items-center justify-center shadow-2xl overflow-hidden border border-border tool-icon-3d">
+                          <img 
+                            src={`https://www.google.com/s2/favicons?sz=128&domain=${tool.domain}`} 
+                            alt={`${tool.name} logo`}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <div className="tool-title-3d">
+                          <h3 className="font-extrabold text-2xl tracking-tighter group-hover:text-primary transition-colors">{tool.name}</h3>
+                          <span className={`text-[9px] uppercase font-black tracking-widest px-2 py-0.5 rounded-lg border ${categoryStyles[tool.category] || "bg-surface text-text-muted"}`}>
+                            {tool.category}
+                          </span>
+                        </div>
+                      </div>
+                      <a 
+                        href={tool.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/40 transition-all shrink-0 group-hover:rotate-45 relative z-[60]"
+                      >
+                        <ExternalLink size={20} />
+                      </a>
                     </div>
-                  </div>
 
-                  <div className="flex gap-4 group/item hover:translate-x-2 transition-transform duration-500">
-                    <div className="mt-1 text-destructive/50 shrink-0 transition-transform group-hover/item:scale-125"><AlertTriangle size={18} /></div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block mb-1">The Pivot</span>
-                      <p className="text-[11px] text-text-secondary font-medium leading-tight">{tool.avoidWhen}</p>
+                    <p className="text-sm text-text-secondary leading-relaxed mb-6 flex-1 group-hover:text-foreground transition-colors font-medium tool-description-3d">
+                      {tool.description}
+                    </p>
+
+                    <div className="space-y-4 pt-6 border-t border-border/40 tool-features-3d">
+                      <div className="flex gap-4 group/item hover:translate-x-2 transition-transform">
+                        <div className="mt-1 text-primary shrink-0 transition-transform group-hover/item:scale-125"><CheckCircle2 size={18} /></div>
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block mb-1">Elite For</span>
+                          <p className="text-[11px] text-foreground/80 font-bold leading-tight">{tool.bestFor}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-4 group/item hover:translate-x-2 transition-transform duration-300">
+                        <div className="mt-1 text-text-secondary shrink-0 transition-transform group-hover/item:scale-125"><Lightbulb size={18} /></div>
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block mb-1">Vibe Tip</span>
+                          <p className="text-[11px] text-text-secondary font-medium italic leading-tight">{tool.beginnerUse}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4 group/item hover:translate-x-2 transition-transform duration-500">
+                        <div className="mt-1 text-destructive/50 shrink-0 transition-transform group-hover/item:scale-125"><AlertTriangle size={18} /></div>
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block mb-1">The Pivot</span>
+                          <p className="text-[11px] text-text-secondary font-medium leading-tight">{tool.avoidWhen}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

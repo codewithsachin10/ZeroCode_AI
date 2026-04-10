@@ -242,6 +242,8 @@ const ProductionCalendar = () => {
                   <div className="w-10 h-10 bg-orange-500/10 rounded-xl flex items-center justify-center mx-auto mb-2"><Target className="text-orange-500" size={18} /></div>
                   <h4 className="text-[9px] font-black uppercase tracking-widest text-text-muted">Build Spawns</h4>
                   <p className="text-2xl font-black text-white tracking-widest">{projectsThisMonth}</p>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Build Spawns</h4>
+                  <p className="text-3xl font-black text-white tracking-widest">{projectsThisMonth}</p>
                </div>
             </div>
 
@@ -251,8 +253,8 @@ const ProductionCalendar = () => {
                   <div className="flex justify-between items-start mb-10">
                     <div>
                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary mb-2">Chronos Hub</h3>
-                       <h4 className="text-2xl font-black uppercase tracking-tighter text-white">{format(selectedDate, "MMM dd, yyyy")}</h4>
-                       <p className="text-[10px] text-text-muted italic font-bold">Protocol sync for this interval.</p>
+                       <h4 className="text-3xl font-black uppercase tracking-tighter text-white">{format(selectedDate, "MMM dd, yyyy")}</h4>
+                       <p className="text-xs text-text-muted italic font-medium">Protocol sync for this interval.</p>
                     </div>
                     <Trophy className="text-primary opacity-20" size={32} />
                   </div>

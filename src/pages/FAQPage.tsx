@@ -9,8 +9,8 @@ const FAQPage = () => {
         {/* Hero Area */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-primary/5 blur-[150px] -z-10 animate-pulse"></div>
         
-        <div className="container-main">
-          <div className="max-w-4xl mx-auto text-center mb-12">
+        <div className="w-full px-4 md:px-10">
+          <div className="max-w-5xl mx-auto text-center mb-12">
              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass text-[10px] font-black uppercase tracking-widest text-primary mb-10 border border-primary/20 shadow-lg shadow-primary/5">
                 <Sparkles size={14} className="animate-pulse" />
                 <span>The Global Brain Node</span>
@@ -25,7 +25,7 @@ const FAQPage = () => {
              </p>
           </div>
           
-          <div className="bg-surface/30 rounded-[48px] border border-border/40 backdrop-blur-3xl overflow-hidden shadow-2xl">
+          <div className="bg-surface/30 rounded-[48px] border border-border/40 backdrop-blur-3xl overflow-hidden shadow-2xl w-full">
               <FAQSection />
           </div>
           
