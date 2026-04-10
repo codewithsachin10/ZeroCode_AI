@@ -95,11 +95,12 @@
 
 /* From Uiverse.io by Timeless-Eve - Optimized for Visibility */
 .loader {
-  width: 200px;
-  height: 240px;
+  width: 250px;
+  height: 250px;
   position: relative;
   transform-style: preserve-3d;
-  transform: scale(0.6);
+  perspective: 1000px;
+  transform: rotateX(10deg) scale(0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,7 +108,7 @@
 
 @media (max-width: 480px) {
   .loader {
-    transform: scale(0.5);
+    transform: rotateX(10deg) scale(0.5);
   }
 }
 
@@ -120,9 +121,13 @@
   position: absolute;
   right: 32%;
   bottom: -11px;
-  background: #050505;
-  transform: translateZ(200px) rotate(var(--r));
-  animation: mask var(--duration) linear forwards infinite;
+  background: #0B0B0B;
+  transform: translateZ(-100px) rotate(var(--r));
+  animation-name: mask;
+  animation-duration: var(--duration);
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
 }
 
 .loader:after {
