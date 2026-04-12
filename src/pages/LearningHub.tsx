@@ -11,7 +11,11 @@ import {
   ListChecks,
   ChevronRight,
   Zap,
-  ArrowLeft
+  ArrowLeft,
+  CalendarCheck,
+  ExternalLink,
+  Phone,
+  Presentation
 } from "lucide-react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +25,7 @@ import { useAcademy } from "@/context/AcademyContext";
 import { sanitizeExternalUrl } from "@/lib/security";
 import AppLoader from "@/components/ui/AppLoader";
 import { Button } from "@/components/ui/button";
+import PresentationViewer from "@/components/presentation/PresentationViewer";
 
 interface UserProgress {
   videoId: string;
@@ -159,6 +164,7 @@ const LearningHub = () => {
   const [files, setFiles] = useState<any[]>([]);
   const [userProjects, setUserProjects] = useState<Record<string, any>>({});
   const [projectSubmission, setProjectSubmission] = useState<Record<string, { github: string; live: string }>>({});
+  const [isPPTViewerOpen, setIsPPTViewerOpen] = useState(false);
   const [learnModules, setLearnModules] = useState<ModuleConfig[]>([]);
   const [learnProjects, setLearnProjects] = useState<ProjectBlueprint[]>([]);
 
@@ -406,9 +412,56 @@ const LearningHub = () => {
     <Layout>
       <div className="section-padding min-h-screen">
         <div className="container-main space-y-8 animate-in fade-in duration-700">
-            <div className="space-y-4">
-               <h1 className="text-xl font-bold uppercase text-white tracking-widest leading-none">Learning Center</h1>
+            {searchParams.get("course") !== "fullbuild-ai" && (
+              <div className="space-y-4">
+                 <h1 className="text-xl font-bold uppercase text-white tracking-widest leading-none">Learning Center</h1>
+              </div>
+            )}
+
+            {/* Live Event / Meeting Card — hide when inside fullbuild-ai course (it has its own) */}
+            {searchParams.get("course") !== "fullbuild-ai" && (
+            <div className="relative p-6 bg-[#0B0B0B] border border-primary/30 rounded-[2px] shadow-2xl overflow-hidden group">
+               <div className="absolute top-0 left-0 bottom-0 w-[3px] bg-primary" />
+               <div className="absolute -top-20 -right-20 w-48 h-48 bg-primary/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-primary/20 transition-all duration-700" />
+               
+               <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  <div className="flex items-start gap-5">
+                     <div className="w-14 h-14 rounded-[2px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-lg shadow-primary/10">
+                        <CalendarCheck size={24} />
+                     </div>
+                     <div className="space-y-3">
+                        <div className="flex items-center gap-3 flex-wrap">
+                           <h3 className="text-base font-black uppercase text-white tracking-tight">Live Session — Event / Meeting</h3>
+                           <span className="flex items-center gap-1.5 px-2.5 py-0.5 bg-primary/20 border border-primary/30 rounded-full">
+                              <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                              <span className="text-[8px] font-black uppercase tracking-widest text-primary">Today</span>
+                           </span>
+                        </div>
+                        <div className="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-text-muted">
+                           <span className="flex items-center gap-1.5"><Clock size={12} className="text-primary" /> 3:00 PM — 5:00 PM</span>
+                           <span className="flex items-center gap-1.5"><CalendarCheck size={12} className="text-primary" /> April 12, 2026</span>
+                        </div>
+                        <p className="text-[11px] text-text-secondary leading-relaxed max-w-2xl font-medium">
+                           All important notes, prompts, and videos will be uploaded here. Join the live session to learn and collaborate with the academy.
+                        </p>
+                        <div className="flex items-center gap-2 pt-1 text-[9px] font-bold text-text-muted uppercase tracking-widest">
+                           <Phone size={10} className="text-primary" />
+                           <span>Dial: +1 916-900-6407 &nbsp;|&nbsp; PIN: 924 274 970#</span>
+                        </div>
+                     </div>
+                  </div>
+                  <a
+                     href="https://meet.google.com/ffj-qagz-egr"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="h-12 px-8 bg-primary text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-[2px] flex items-center gap-2 hover:scale-[1.03] transition-all shadow-xl shadow-primary/20 whitespace-nowrap shrink-0"
+                  >
+                     <ExternalLink size={14} />
+                     Join Meeting
+                  </a>
+               </div>
             </div>
+            )}
 
             {!selectedModule ? (
               <div className="space-y-12 animate-in fade-in duration-500">
@@ -450,6 +503,40 @@ const LearningHub = () => {
                            </div>
                         </div>
 
+                        {/* Full Build Apps Using AI Card */}
+                        <div className="group relative p-6 bg-[#111] border border-white/5 rounded-xl hover:border-primary/40 hover:bg-[#151515] transition-all flex flex-col justify-between min-h-[280px] shadow-2xl overflow-hidden">
+                           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[60px] rounded-full pointer-events-none" />
+                           
+                           <div className="space-y-4">
+                              <div className="flex items-center justify-between">
+                                 <div className="w-12 h-12 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shadow-2xl shadow-blue-500/10">
+                                    <Zap size={24} />
+                                 </div>
+                                 <span className="flex items-center gap-1.5 px-2.5 py-0.5 bg-primary/10 border border-primary/20 rounded-full">
+                                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                                    <span className="text-[7px] font-black uppercase tracking-widest text-primary">New · Today</span>
+                                 </span>
+                              </div>
+                              <div className="space-y-2">
+                                 <h3 className="text-xl font-bold uppercase text-white tracking-tight leading-none group-hover:text-blue-400 transition-colors">Full Build Apps Using AI</h3>
+                                 <p className="text-[11px] text-text-muted leading-relaxed line-clamp-2">Learn to build complete, production-ready applications from scratch using AI tools. End-to-end app development powered by AI.</p>
+                              </div>
+                           </div>
+
+                           <div className="space-y-4">
+                              <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-widest text-text-muted">
+                                 <span className="flex items-center gap-1.5"><Video size={12} className="text-blue-400" /> Live Sessions</span>
+                                 <span className="flex items-center gap-1.5"><CalendarCheck size={12} className="text-blue-400" /> April 12, 2026</span>
+                              </div>
+                              <Button 
+                                onClick={() => setSearchParams({ course: "fullbuild-ai" })}
+                                className="h-10 w-full bg-white/5 border border-white/10 text-white font-bold uppercase text-[9px] tracking-widest rounded-lg group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition-all"
+                              >
+                                 Open Course
+                              </Button>
+                           </div>
+                        </div>
+
                         {/* Future Course Placeholder */}
                         <div className="p-6 border border-white/[0.03] bg-white/[0.01] rounded-xl flex flex-col items-center justify-center text-center space-y-3 opacity-40 grayscale">
                            <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-text-muted">
@@ -458,6 +545,97 @@ const LearningHub = () => {
                            <div>
                               <p className="text-[9px] font-bold uppercase text-text-muted">New Course</p>
                               <p className="text-[10px] text-text-muted italic">Coming Soon</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                ) : searchParams.get("course") === "fullbuild-ai" ? (
+                  <div className="space-y-8 animate-in fade-in duration-500">
+                     <div className="flex items-center justify-between pb-4 border-b border-white/5">
+                        <div className="flex items-center gap-4">
+                           <Button 
+                             variant="ghost" 
+                             onClick={() => setSearchParams({})}
+                             className="w-10 h-10 p-0 rounded-lg bg-white/5 border border-white/5 text-text-muted hover:text-white hover:bg-white/10 transition-all"
+                           >
+                              <ArrowLeft size={16} />
+                           </Button>
+                           <div>
+                              <h2 className="text-lg font-bold uppercase text-white tracking-tight">Full Build Apps Using AI</h2>
+                              <p className="text-[9px] font-bold uppercase tracking-widest text-blue-400">Live Course · April 12, 2026</p>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* Meeting Card */}
+                     <div className="relative p-8 bg-[#0B0B0B] border border-primary/30 rounded-[2px] shadow-2xl overflow-hidden group">
+                        <div className="absolute top-0 left-0 bottom-0 w-[3px] bg-primary" />
+                        <div className="absolute -top-20 -right-20 w-48 h-48 bg-primary/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-primary/20 transition-all duration-700" />
+                        
+                        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                           <div className="flex items-start gap-5">
+                              <div className="w-14 h-14 rounded-[2px] bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-lg shadow-primary/10">
+                                 <CalendarCheck size={24} />
+                              </div>
+                              <div className="space-y-3">
+                                 <div className="flex items-center gap-3 flex-wrap">
+                                    <h3 className="text-base font-black uppercase text-white tracking-tight">Live Session — Event / Meeting</h3>
+                                    <span className="flex items-center gap-1.5 px-2.5 py-0.5 bg-primary/20 border border-primary/30 rounded-full">
+                                       <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                                       <span className="text-[8px] font-black uppercase tracking-widest text-primary">Today</span>
+                                    </span>
+                                 </div>
+                                 <div className="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-text-muted">
+                                    <span className="flex items-center gap-1.5"><Clock size={12} className="text-primary" /> 3:00 PM — 5:00 PM</span>
+                                    <span className="flex items-center gap-1.5"><CalendarCheck size={12} className="text-primary" /> April 12, 2026</span>
+                                 </div>
+                                 <p className="text-[11px] text-text-secondary leading-relaxed max-w-2xl font-medium">
+                                    All important notes, prompts, and videos will be uploaded here. Join the live session to learn and collaborate with the academy.
+                                 </p>
+                                 <div className="flex items-center gap-2 pt-1 text-[9px] font-bold text-text-muted uppercase tracking-widest">
+                                    <Phone size={10} className="text-primary" />
+                                    <span>Dial: +1 916-900-6407 &nbsp;|&nbsp; PIN: 924 274 970#</span>
+                                 </div>
+                              </div>
+                           </div>
+                           <a
+                              href="https://meet.google.com/ffj-qagz-egr"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="h-12 px-8 bg-primary text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-[2px] flex items-center gap-2 hover:scale-[1.03] transition-all shadow-xl shadow-primary/20 whitespace-nowrap shrink-0"
+                           >
+                              <ExternalLink size={14} />
+                              Join Meeting
+                           </a>
+                        </div>
+                     </div>
+
+                     {/* PPT and Materials Grid */}
+                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4">
+                        {/* PPT Card - 4:3 Aspect Ratio */}
+                        <div className="relative bg-[#0B0B0B] border border-white/10 rounded-[2px] shadow-xl overflow-hidden group aspect-[4/3] flex flex-col p-6 hover:border-primary/40 transition-all">
+                           <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
+                              <div className="w-16 h-16 rounded-[2px] bg-white/5 border border-white/10 flex items-center justify-center text-text-muted shrink-0 shadow-lg group-hover:scale-110 group-hover:border-primary/40 group-hover:text-primary transition-all duration-500">
+                                 <Presentation size={32} />
+                              </div>
+                              <div className="space-y-2">
+                                 <h3 className="text-sm font-black uppercase text-white tracking-tight leading-tight">Full Build Apps Using AI PPT</h3>
+                                 <p className="text-[9px] uppercase font-bold tracking-[0.2em] text-text-muted mx-auto">Course Presentation</p>
+                              </div>
+                           </div>
+                           
+                           <div className="mt-auto pt-6 border-t border-white/5">
+                              <a
+                                 href="#"
+                                 onClick={(e) => {
+                                    e.preventDefault();
+                                    setIsPPTViewerOpen(true);
+                                 }}
+                                 className="h-10 w-full bg-white/5 border border-white/10 text-white font-black uppercase text-[9px] tracking-[0.2em] rounded-[2px] flex items-center justify-center gap-2 hover:bg-primary hover:border-primary hover:text-black transition-all shadow-xl whitespace-nowrap"
+                              >
+                                 <ExternalLink size={12} />
+                                 Open PPT
+                              </a>
                            </div>
                         </div>
                      </div>
@@ -823,6 +1001,12 @@ const LearningHub = () => {
 
         </div>
       </div>
+      
+      {/* PPT Viewer Overlay */}
+      <PresentationViewer 
+        isOpen={isPPTViewerOpen} 
+        onClose={() => setIsPPTViewerOpen(false)} 
+      />
     </Layout>
   );
 };

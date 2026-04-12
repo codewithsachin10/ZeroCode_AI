@@ -93,6 +93,9 @@ const App = () => (
               <Route path="/projects/:id" element={<ProjectBuild />} />
               <Route path="/certificate/:catId" element={<Certificate />} />
               <Route path="/hackathon/:hackathonId" element={<HackathonDetails />} />
+              <Route path="/tools" element={<ToolsPage />} />
+              <Route path="/hackathon" element={<HackathonMode />} />
+              <Route path="/guided-build" element={<GuidedBuild />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               
