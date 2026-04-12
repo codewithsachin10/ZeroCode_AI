@@ -2,15 +2,20 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { 
   LayoutDashboard, 
   Library, 
-  Tags, 
   Users, 
-  BarChart3, 
-  MessageSquare, 
-  Settings,
+  Video,
+  Layers,
+  Play,
+  Award,
   LogOut,
   Menu,
-  Video,
-  Trophy
+  Trophy,
+  Settings,
+  BarChart3,
+  MessageSquare,
+  RefreshCw,
+  ClipboardList,
+  Megaphone
 } from "lucide-react";
 import { useState } from "react";
 import { auth } from "@/lib/firebase";
@@ -20,14 +25,21 @@ import AppLoader from "@/components/ui/AppLoader";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
-  { icon: Library, label: "Prompts", href: "/admin/prompts" },
-  { icon: Tags, label: "Categories", href: "/admin/categories" },
-  { icon: Video, label: "Learn Course", href: "/admin/learning" },
-  { icon: Trophy, label: "Hackathons", href: "/admin/hackathons" },
+  { icon: Video, label: "Courses", href: "/admin/courses" },
+  { icon: Layers, label: "Modules", href: "/admin/modules" },
+  { icon: Play, label: "Lessons", href: "/admin/lessons" },
+  { icon: Award, label: "Quizzes", href: "/admin/quizzes" },
+  { icon: Library, label: "Projects", href: "/admin/projects" },
   { icon: Users, label: "Users", href: "/admin/users" },
+  { icon: ClipboardList, label: "Submissions", href: "/admin/submissions" },
+  { icon: Library, label: "Prompts", href: "/admin/prompts" },
+  { icon: Layers, label: "Categories", href: "/admin/categories" },
+  { icon: Trophy, label: "Hackathons", href: "/admin/hackathons" },
   { icon: BarChart3, label: "Analytics", href: "/admin/analytics" },
   { icon: MessageSquare, label: "Feedback", href: "/admin/feedback" },
+  { icon: Megaphone, label: "Announcements", href: "/admin/announcements" },
   { icon: Settings, label: "Settings", href: "/admin/settings" },
+  { icon: RefreshCw, label: "Data Sync", href: "/admin/sync" },
 ];
 
 export default function AdminLayout() {

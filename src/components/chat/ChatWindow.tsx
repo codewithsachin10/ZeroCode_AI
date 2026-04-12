@@ -45,7 +45,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room, userId, userName, userPho
 
     const unsub = listenToMessages(room.id, (msgs) => setMessages(msgs));
     const unsubTyping = listenToTyping(room.id, (users) => {
-      setTypingUsers(users.filter(id => id !== userId));
+      setTypingUsers(users.filter((u: any) => u.userId !== userId).map((u: any) => u.userId));
     });
     return () => {
       unsub();
@@ -98,9 +98,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ room, userId, userName, userPho
                 <div className="flex items-center gap-2 opacity-40">
                   <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
                   <span className="text-[9px] text-white font-black uppercase tracking-[0.3em]">
-                     {otherUserStatus?.lastSeen 
-                       ? `Offline: ${format(otherUserStatus.lastSeen.toDate(), 'HH:mm')}`
-                       : 'Standby Mode'}
+                     {otherUserStatus?.lastSeen?.toDate 
+                        ? `Offline: ${format(otherUserStatus.lastSeen.toDate(), 'HH:mm')}`
+                        : 'Standby Mode'}
                   </span>
                 </div>
               )}

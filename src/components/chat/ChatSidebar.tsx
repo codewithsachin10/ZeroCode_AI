@@ -221,7 +221,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 const isActive = selectedRoomId === room.id;
                 const unread = unreadCounts[room.id] || 0;
                 const roomName = getRoomName(room);
-                const otherId = room.type === 'private' ? room.members.find((id: string) => id !== user?.uid) : null;
+                const otherId = room.type === 'private' && Array.isArray(room.members) ? room.members.find((id: string) => id !== user?.uid) : null;
                 const isOnline = otherId ? getOnlineStatus(otherId) : false;
 
                 return (
@@ -268,7 +268,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                           {getRoomIcon(room.type)}
                           <span className="truncate">{roomName}</span>
                         </span>
-                        {room.lastMessageAt && (
+                        {room.lastMessageAt?.toDate && (
                           <span className={cn(
                             "text-[7px] font-black uppercase tracking-[0.1em] whitespace-nowrap opacity-40 shrink-0",
                             isActive ? "text-primary" : "text-white"

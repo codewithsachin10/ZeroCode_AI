@@ -213,8 +213,6 @@ export const updateTypingStatus = async (roomId: string, userId: string, isTypin
 export const incrementUnreadCounts = async (roomId: string, senderId: string, memberIds: string[]) => {
   const batch = writeBatch(db);
   
-  // If no members (global chat), we might need another strategy or just skip
-  // For now, let's assume we have members list or skip for global to avoid massive writes
   if (memberIds.length > 0) {
     memberIds.forEach(mId => {
       if (mId !== senderId) {
@@ -277,62 +275,59 @@ export const uploadChatFile = async (roomId: string, file: Blob | File, fileName
   });
 };
 
-// --- REAL-TIME LISTENERS ---
+// --- REAL-TIME LISTENERS (index-free: filter/sort in memory) ---
 
 export const listenToRooms = (userId: string, callback: (rooms: any[]) => void) => {
-  const globalQuery = query(chatRoomsCollection, where('type', '==', 'global'), orderBy('lastMessageAt', 'desc'));
-  const memberQuery = query(chatRoomsCollection, where('members', 'array-contains', userId), orderBy('lastMessageAt', 'desc'));
-  let globalRooms: any[] = [];
-  let memberRooms: any[] = [];
-  const emit = () => {
-    const map = new Map<string, any>();
-    [...globalRooms, ...memberRooms].forEach((room) => map.set(room.id, room));
-    callback(Array.from(map.values()).sort((a, b) => {
+  // Listen to ALL rooms, filter in memory to avoid composite index requirements
+  const unsub = onSnapshot(chatRoomsCollection, (snap) => {
+    const allRooms = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    
+    // Filter: include global rooms + rooms where user is a member
+    const filtered = allRooms.filter((room: any) => 
+      room.type === 'global' || (Array.isArray(room.members) && room.members.includes(userId))
+    );
+    
+    // Sort: newest activity first
+    filtered.sort((a: any, b: any) => {
       const aTime = a.lastMessageAt?.toMillis?.() || 0;
       const bTime = b.lastMessageAt?.toMillis?.() || 0;
       return bTime - aTime;
-    }));
-  };
-  const unsubGlobal = onSnapshot(globalQuery, (snap) => {
-    globalRooms = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    emit();
+    });
+    
+    callback(filtered);
   });
-  const unsubMember = onSnapshot(memberQuery, (snap) => {
-    memberRooms = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    emit();
-  });
-  return () => {
-    unsubGlobal();
-    unsubMember();
-  };
+  
+  return unsub;
 };
 
-export const listenToMessages = (roomId: string, callback: (msgs: any[]) => void, limitCount = 50) => {
-  const q = query(
-    messagesCollection,
-    where('roomId', '==', roomId),
-    orderBy('createdAt', 'desc'),
-    limit(limitCount)
-  );
-
-  return onSnapshot(q, (snap) => {
-    const msgs = snap.docs
+export const listenToMessages = (roomId: string, callback: (msgs: any[]) => void, limitCount = 100) => {
+  // Fetch all messages, filter by roomId in memory to avoid composite index
+  const unsub = onSnapshot(messagesCollection, (snap) => {
+    const allMsgs = snap.docs
       .map(doc => ({ id: doc.id, ...doc.data() }))
-      .reverse(); // Newest at bottom
-    callback(msgs);
+      .filter((m: any) => m.roomId === roomId)
+      .sort((a: any, b: any) => {
+        const aTime = a.createdAt?.toMillis?.() || 0;
+        const bTime = b.createdAt?.toMillis?.() || 0;
+        return aTime - bTime; // oldest first (newest at bottom)
+      })
+      .slice(-limitCount); // keep only latest N
+    callback(allMsgs);
   });
+
+  return unsub;
 };
 
 export const listenToTyping = (roomId: string, callback: (typingUsers: any[]) => void) => {
-  const q = query(
-    typingStatusCollection,
-    where('roomId', '==', roomId),
-    where('isTyping', '==', true)
-  );
-
-  return onSnapshot(q, (snap) => {
-    callback(snap.docs.map(doc => doc.data()));
+  // Fetch all typing statuses, filter in memory
+  const unsub = onSnapshot(typingStatusCollection, (snap) => {
+    const typing = snap.docs
+      .map(doc => doc.data())
+      .filter((t: any) => t.roomId === roomId && t.isTyping === true);
+    callback(typing);
   });
+
+  return unsub;
 };
 
 export const listenToUserStatus = (callback: (statusMap: Record<string, any>) => void) => {
@@ -346,12 +341,17 @@ export const listenToUserStatus = (callback: (statusMap: Record<string, any>) =>
 };
 
 export const listenToUnreadCounts = (userId: string, callback: (counts: Record<string, number>) => void) => {
-  const q = query(unreadCountsCollection, where('userId', '==', userId));
-  return onSnapshot(q, (snap) => {
+  // Fetch all unread counts, filter by userId in memory
+  const unsub = onSnapshot(unreadCountsCollection, (snap) => {
     const counts: Record<string, number> = {};
     snap.docs.forEach(doc => {
-      counts[doc.data().roomId] = doc.data().count || 0;
+      const data = doc.data();
+      if (data.userId === userId) {
+        counts[data.roomId] = data.count || 0;
+      }
     });
     callback(counts);
   });
+
+  return unsub;
 };

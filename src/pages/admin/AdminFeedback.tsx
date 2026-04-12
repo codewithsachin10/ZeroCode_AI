@@ -1,164 +1,149 @@
-import { useEffect, useState } from "react";
-import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { 
+  MessageSquare, 
+  Search, 
+  Loader2,
+  Trash2,
+  User,
+  Clock,
+  Filter,
+  Bug,
+  Lightbulb,
+  MessageCircle,
+  Hash
+} from "lucide-react";
+import { 
+  collection, 
+  query, 
+  orderBy, 
+  onSnapshot, 
+  deleteDoc, 
+  doc 
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { useToast } from "@/components/ui/use-toast";
-import { CheckCircle, Clock, Trash2, Mail, User, ShieldCheck } from "lucide-react";
-
-type Feedback = {
-  id: string;
-  userId?: string;
-  userEmail?: string;
-  message: string;
-  status: "pending" | "resolved";
-  createdAt?: any;
-};
+import { toast } from "sonner";
+import { format } from "date-fns";
 
 export default function AdminFeedback() {
-  const [feedback, setFeedback] = useState<Feedback[]>([]);
+  const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "pending" | "resolved">("all");
-  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
 
   useEffect(() => {
-    fetchFeedback();
+    const q = query(collection(db, "feedback"), orderBy("createdAt", "desc"));
+    const unsub = onSnapshot(q, (snap) => {
+      setFeedbacks(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setLoading(false);
+    });
+    return () => unsub();
   }, []);
 
-  const fetchFeedback = async () => {
-    try {
-      const q = query(collection(db, "feedback"), orderBy("createdAt", "desc"));
-      const snap = await getDocs(q);
-      setFeedback(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Feedback)));
-    } catch (error) {
-      console.error("Error fetching feedback", error);
-      setFeedback([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const markResolved = async (id: string) => {
-    try {
-      await updateDoc(doc(db, "feedback", id), { status: "resolved" });
-      setFeedback(feedback.map(f => f.id === id ? { ...f, status: "resolved" } : f));
-      toast({ title: "Resolved", description: "Message marked as resolved." });
-    } catch (error) {
-      toast({ title: "Error", description: "Failed to update status", variant: "destructive" });
-    }
-  };
-
-  const deleteFeedback = async (id: string) => {
-    if (!confirm("Are you sure you want to permanently delete this feedback?")) return;
+  const handleDelete = async (id: string) => {
+    if (!confirm("Remove this feedback permanently?")) return;
     try {
       await deleteDoc(doc(db, "feedback", id));
-      setFeedback(feedback.filter(f => f.id !== id));
-      toast({ title: "Deleted", description: "Feedback removed from system." });
-    } catch (error) {
-      toast({ title: "Error", description: "Failed to delete", variant: "destructive" });
+      toast.success("Feedback cleared");
+    } catch (err) {
+      toast.error("Operation failed");
     }
   };
 
-  const filteredFeedback = feedback.filter(f => {
-    if (filter === "all") return true;
-    return f.status === filter;
+  const getIcon = (type: string) => {
+    switch (type) {
+      case "bug": return <Bug size={14} className="text-red-500" />;
+      case "feature": return <Lightbulb size={14} className="text-[#eab308]" />;
+      case "content": return <MessageCircle size={14} className="text-primary" />;
+      default: return <Hash size={14} className="text-text-muted" />;
+    }
+  };
+
+  const filteredFeedbacks = feedbacks.filter(f => {
+    const matchesSearch = f.message?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          f.userName?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterType === "all" || f.type === filterType;
+    return matchesSearch && matchesFilter;
   });
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight mb-1">User Communication</h2>
-          <p className="text-text-secondary text-sm">Review incoming feedback and resolve support requests.</p>
+    <div className="space-y-8 max-w-5xl">
+      <div className="border-b border-white/5 pb-4">
+        <h2 className="text-sm font-black uppercase text-white tracking-widest leading-none mb-1">Feedback Intake</h2>
+        <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest">Listen to the academy community</p>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted opacity-40" size={14} />
+          <input 
+            placeholder="Search feedback messages..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full h-11 bg-[#0B0B0B] border border-white/5 rounded-[2px] pl-10 pr-4 text-xs font-bold text-white focus:border-primary/20 outline-none transition-all"
+          />
         </div>
-        <div className="flex bg-surface border border-border p-1 rounded-xl">
-          {(["all", "pending", "resolved"] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
-                filter === f 
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
-                  : "text-text-muted hover:text-foreground"
-              }`}
+        <div className="flex bg-[#0B0B0B] border border-white/5 rounded-[2px] p-1">
+          {["all", "general", "bug", "feature", "content"].map((t) => (
+            <button 
+              key={t}
+              onClick={() => setFilterType(t)}
+              className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-[1px] transition-all ${filterType === t ? 'bg-primary text-black' : 'text-text-muted hover:text-white'}`}
             >
-              {f}
+              {t}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            <p className="text-text-muted text-sm italic">Loading your inbox...</p>
-          </div>
-        ) : filteredFeedback.length === 0 ? (
-          <div className="glass rounded-2xl p-20 text-center border-dashed border-border/60">
-            <div className="w-16 h-16 bg-surface rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border">
-              <Mail className="text-text-muted opacity-40" size={32} />
-            </div>
-            <h3 className="text-xl font-bold mb-2">Clean Slate</h3>
-            <p className="text-text-secondary max-w-xs mx-auto text-sm italic">
-               {filter === 'all' ? "No feedback has been received yet." : `No messages match the "${filter}" filter.`}
-            </p>
-          </div>
-        ) : (
-          filteredFeedback.map(item => (
-            <div key={item.id} className="glass rounded-2xl p-6 hover:bg-surface/30 transition-all border-border/40 group relative overflow-hidden">
-              {/* Status strip */}
-              <div 
-                className={`absolute inset-y-0 left-0 w-1.5 ${item.status === 'resolved' ? 'bg-emerald-500/50' : 'bg-amber-500/50'}`}
-              />
-              
-              <div className="flex flex-col md:flex-row justify-between items-start gap-6">
-                <div className="space-y-4 flex-1">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold tracking-tighter uppercase flex items-center gap-1.5 border shadow-sm ${
-                      item.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                    }`}>
-                      {item.status === 'resolved' ? <ShieldCheck size={12}/> : <Clock size={12}/>}
-                      {item.status}
-                    </span>
-                    <span className="text-[10px] text-text-muted font-bold tracking-widest uppercase">
-                      {item.createdAt ? new Date(item.createdAt.toDate?.() || item.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'DATE_ERROR'}
-                    </span>
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface/50 border border-border text-[11px] text-text-secondary font-medium">
-                      <User size={12} className="text-primary" />
-                      {item.userEmail || "anonymous_user"}
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <Loader2 className="animate-spin text-primary" size={24} />
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredFeedbacks.map((f) => (
+            <div key={f.id} className="p-6 bg-[#0B0B0B] border border-white/5 rounded-[2px] group relative hover:border-white/10 transition-all">
+              <div className="flex justify-between items-start mb-6">
+                 <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/[0.02] border border-white/5 rounded-[2px]">
+                       {getIcon(f.type)}
                     </div>
-                  </div>
-                  
-                  <div className="relative">
-                    <p className="text-base leading-relaxed text-foreground/90 font-medium italic pl-4 border-l-2 border-primary/20">
-                      "{item.message}"
-                    </p>
-                  </div>
-                </div>
+                    <div>
+                       <span className="text-[8px] font-black uppercase tracking-widest text-text-muted opacity-40 block mb-0.5">{f.type} REPORT</span>
+                       <h3 className="text-[11px] font-black text-white uppercase tracking-tight italic">From: {f.userName}</h3>
+                    </div>
+                 </div>
+                 <button onClick={() => handleDelete(f.id)} className="p-2 text-text-muted hover:text-red-500 hover:bg-red-500/5 rounded-[2px] transition-all">
+                    <Trash2 size={14} />
+                 </button>
+              </div>
 
-                <div className="flex flex-row md:flex-col gap-2 w-full md:w-auto shrink-0 self-end md:self-start opacity-0 group-hover:opacity-100 transition-opacity">
-                  {item.status === 'pending' && (
-                    <button 
-                      onClick={() => markResolved(item.id)}
-                      className="flex-1 md:w-32 flex items-center justify-center gap-2 text-xs px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
-                    >
-                      <CheckCircle size={14} />
-                      Resolve
-                    </button>
-                  )}
-                  <button 
-                    onClick={() => deleteFeedback(item.id)}
-                    className="flex-1 md:w-32 flex items-center justify-center gap-2 text-xs px-4 py-2.5 rounded-xl bg-surface border border-border text-text-muted font-bold hover:text-destructive hover:border-destructive/40 transition-all group/del"
-                  >
-                    <Trash2 size={14} className="group-hover/del:scale-110 transition-transform" />
-                    Discard
-                  </button>
-                </div>
+              <p className="text-sm font-medium text-text-secondary leading-loose italic opacity-80 mb-6 bg-white/[0.01] p-4 border-l-2 border-primary/20">
+                 "{f.message}"
+              </p>
+
+              <div className="flex items-center justify-between pt-6 border-t border-white/[0.02]">
+                 <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest text-text-muted opacity-40">
+                    <div className="flex items-center gap-1.5">
+                       <User size={12} />
+                       {f.userEmail}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                       <Clock size={12} />
+                       {f.createdAt ? format(f.createdAt.toDate(), "MMM dd, HH:mm") : 'Syncing...'}
+                    </div>
+                 </div>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+
+          {filteredFeedbacks.length === 0 && (
+            <div className="py-20 text-center border border-dashed border-white/5 rounded-[2px]">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted opacity-20 italic">No community feedback matching criteria found.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
-

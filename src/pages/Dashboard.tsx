@@ -22,6 +22,7 @@ import {
 import { useUser } from "@/context/UserContext";
 import { useAcademy } from "@/context/AcademyContext";
 import { Button } from "@/components/ui/button";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 
 // Optimized Stat Node
 const StatNode = memo(({ label, value, color, icon: Icon }: any) => (
@@ -104,6 +105,9 @@ const Dashboard = () => {
       <div className="section-padding space-y-16 animate-in fade-in duration-700">
         <div className="w-full space-y-16 px-12">
           
+          {/* Important Announcements */}
+          <AnnouncementBanner />
+
           {/* Header Command Cluster */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-10">
             <div className="space-y-4 w-full">

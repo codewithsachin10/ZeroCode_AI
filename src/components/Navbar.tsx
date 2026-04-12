@@ -17,6 +17,8 @@ const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
 
   const navLinks = [
     { label: "Learn", href: "/learn", show: true },
+    { label: "Projects", href: "/projects", show: true },
+    { label: "Showcase", href: "/showcase", show: true },
     { label: "Prompts", href: "/prompts", show: settings.enablePromptGenerator },
     { label: "Tools", href: "/tools", show: true },
     { label: "FAQ", href: "/faq", show: true },
@@ -37,8 +39,8 @@ const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/40 backdrop-blur-3xl">
       <div className="container-main flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-3 font-bold text-xl group transition-all">
-          <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary border border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-            <Zap size={18} className="animate-pulse" />
+          <div className="w-8 h-8 rounded-[2px] bg-black/40 flex items-center justify-center border border-white/10 group-hover:border-primary/40 transition-all duration-300 overflow-hidden">
+            <img src="/favicon.png" alt="Z" className="w-full h-full object-cover" />
           </div>
           <span className="tracking-tight text-gradient">ZeroCode AI</span>
         </Link>
@@ -73,13 +75,13 @@ const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
                       </Button>
                    </Link>
                 )}
-                <Link to="/account">
+                <Link to="/portfolio">
                    <button className="tactile-btn tactile-btn-green scale-[0.85] origin-right">
                       <span className="btn-shadow"></span>
                       <span className="btn-edge"></span>
                       <span className="btn-front flex items-center gap-2">
                          <LayoutDashboard size={14} />
-                         Dashboard
+                         Portfolio
                       </span>
                    </button>
                 </Link>
@@ -136,11 +138,11 @@ const Navbar = ({ minimal = false }: { minimal?: boolean }) => {
             <div className="flex flex-col gap-3 mt-6 pt-6 border-t border-border/40">
               {user ? (
                  <>
-                    <Link to="/account" onClick={() => setMobileOpen(false)} className="w-full">
+                    <Link to="/portfolio" onClick={() => setMobileOpen(false)} className="w-full">
                        <button className="tactile-btn tactile-btn-green w-full">
                           <span className="btn-shadow"></span>
                           <span className="btn-edge"></span>
-                          <span className="btn-front py-4">Dashboard</span>
+                          <span className="btn-front py-4">Portfolio</span>
                        </button>
                     </Link>
                     <Button 

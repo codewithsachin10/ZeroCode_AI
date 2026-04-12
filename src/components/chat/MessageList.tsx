@@ -200,7 +200,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, currentUserId, onRe
                   isOwn ? "flex-row-reverse" : "flex-row"
                 )}>
                    <span className="text-[8px] font-black uppercase tracking-widest">
-                      {msg.createdAt ? format(msg.createdAt.toDate(), 'HH:mm') : 'Syncing...'}
+                       {msg.createdAt?.toDate ? format(msg.createdAt.toDate(), 'HH:mm') : 'Syncing...'}
                    </span>
                    {isOwn && (
                      <CheckCheck size={10} className="text-primary" />

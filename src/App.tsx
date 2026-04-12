@@ -32,14 +32,26 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 // Admin Pages
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminCourses from "./pages/admin/AdminCourses";
+import AdminModules from "./pages/admin/AdminModules";
+import AdminLessons from "./pages/admin/AdminLessons";
+import AdminQuizzes from "./pages/admin/AdminQuizzes";
+import AdminProjects from "./pages/admin/AdminProjects";
+import AdminUsers from "./pages/admin/AdminUsers";
 import AdminPrompts from "./pages/admin/AdminPrompts";
 import AdminCategories from "./pages/admin/AdminCategories";
-import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminLearning from "./pages/admin/AdminLearning";
 import AdminHackathons from "./pages/admin/AdminHackathons";
 import AdminFeedback from "./pages/admin/AdminFeedback";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminDataSync from "./pages/admin/AdminDataSync";
+import AdminSubmissions from "./pages/admin/AdminSubmissions";
+import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
+import ProjectHub from "./pages/ProjectHub";
+import ProjectBuild from "./pages/ProjectBuild";
+import StudentPortfolio from "./pages/StudentPortfolio";
+import CommunityShowcase from "./pages/CommunityShowcase";
 
 import { AcademyProvider } from "./context/AcademyContext";
 import { UserProvider } from "./context/UserContext";
@@ -75,9 +87,11 @@ const App = () => (
               <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/prompts" element={<PromptLibrary />} />
-              <Route path="/tools" element={<ToolsPage />} />
-              <Route path="/guided-build" element={<GuidedBuild />} />
-              <Route path="/hackathon" element={<HackathonMode />} />
+              <Route path="/learn" element={<LearningHub />} />
+              <Route path="/learn/:unitId" element={<VideoPlayer />} />
+              <Route path="/projects" element={<ProjectHub />} />
+              <Route path="/projects/:id" element={<ProjectBuild />} />
+              <Route path="/certificate/:catId" element={<Certificate />} />
               <Route path="/hackathon/:hackathonId" element={<HackathonDetails />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -152,6 +166,39 @@ const App = () => (
               <Route path="/academy/:videoId" element={<LegacyAcademyVideoRedirect />} />
               <Route path="/academy/certificate/:catId" element={<LegacyAcademyCertificateRedirect />} />
 
+              <Route 
+                path="/projects" 
+                element={
+                  <ProtectedRoute>
+                    <ProjectHub />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/projects/:id" 
+                element={
+                  <ProtectedRoute>
+                    <ProjectBuild />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/portfolio" 
+                element={
+                  <ProtectedRoute>
+                    <StudentPortfolio />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/showcase" 
+                element={
+                  <ProtectedRoute>
+                    <CommunityShowcase />
+                  </ProtectedRoute>
+                } 
+              />
+
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/faq" element={<FAQPage />} />
               
@@ -165,14 +212,22 @@ const App = () => (
                 }
               >
                 <Route index element={<AdminDashboard />} />
+                <Route path="courses" element={<AdminCourses />} />
+                <Route path="modules" element={<AdminModules />} />
+                <Route path="lessons" element={<AdminLessons />} />
+                <Route path="quizzes" element={<AdminQuizzes />} />
+                <Route path="projects" element={<AdminProjects />} />
+                <Route path="users" element={<AdminUsers />} />
                 <Route path="prompts" element={<AdminPrompts />} />
                 <Route path="categories" element={<AdminCategories />} />
-                <Route path="users" element={<AdminUsers />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="learning" element={<AdminLearning />} />
                 <Route path="hackathons" element={<AdminHackathons />} />
                 <Route path="feedback" element={<AdminFeedback />} />
                 <Route path="settings" element={<AdminSettings />} />
+                <Route path="sync" element={<AdminDataSync />} />
+                <Route path="submissions" element={<AdminSubmissions />} />
+                <Route path="announcements" element={<AdminAnnouncements />} />
               </Route>
 
               <Route path="/u/:username" element={<PublicProfile />} />

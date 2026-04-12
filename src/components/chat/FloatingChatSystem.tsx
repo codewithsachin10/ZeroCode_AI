@@ -5,11 +5,16 @@ import { cn } from '@/lib/utils';
 import AIAssistant from '../Chatbot';
 import ChatModal from './ChatModal';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '@/context/UserContext';
 
 const FloatingChatSystem = () => {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useUser();
+
+  // Only show for authenticated users
+  if (!user) return null;
 
   const toggleAI = () => {
     setIsAIOpen(!isAIOpen);

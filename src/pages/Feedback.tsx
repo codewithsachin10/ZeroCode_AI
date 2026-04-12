@@ -2,25 +2,41 @@ import { useState } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useAuth } from "@/hooks/useAuth";
 
 const Feedback = () => {
+  const { user } = useAuth();
   const [type, setType] = useState("general");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) {
       toast.error("Please enter your feedback");
       return;
     }
     setLoading(true);
-    // Will store in database when backend is connected
-    setTimeout(() => {
+    
+    try {
+      await addDoc(collection(db, "feedback"), {
+        type,
+        message,
+        userId: user?.uid || "anonymous",
+        userName: user?.displayName || "Anonymous Student",
+        userEmail: user?.email || "N/A",
+        createdAt: serverTimestamp()
+      });
+      
       toast.success("Thank you for your feedback!");
       setMessage("");
+    } catch (err) {
+      toast.error("Failed to send feedback. Please try again.");
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   };
 
   return (

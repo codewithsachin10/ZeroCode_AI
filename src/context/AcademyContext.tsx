@@ -1,15 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, orderBy, getDocs, onSnapshot } from 'firebase/firestore';
+import { VIBECODING_CURRICULUM } from '@/lib/curriculum-data';
 
-interface VideoCategory {
+export interface VideoCategory {
   id: string;
   name: string;
   learningPath: 'beginner' | 'intermediate' | 'advanced';
   isCertificationEnabled: boolean;
 }
 
-interface Video {
+export interface Video {
   id: string;
   title: string;
   description: string;
@@ -18,31 +19,17 @@ interface Video {
   order: number;
   isLocked: boolean;
   isPublished?: boolean;
+  shortNote?: string[];
+  keyPoints?: string[];
+  animation?: { title: string; flow: string[] };
+  qa?: { question: string; answer: string }[];
+  miniTask?: { instruction: string; actionUrl?: string; actionPrompt?: string };
   quiz?: {
     question: string;
     options: string[];
     correctIndex: number;
   }[];
-  weeklyChecklist?: string[];
-  interactiveConfig?: {
-    unitLabel?: string;
-    animationTitle?: string;
-    script?: string[];
-    quickQuestions?: {
-      question: string;
-      options: string[];
-      correctIndex: number;
-      explanation: string;
-    }[];
-    miniTask?: {
-      title?: string;
-      instruction?: string;
-      actionLabel?: string;
-      actionUrl?: string;
-      actionPrompt?: string;
-    };
-    buildNowLabel?: string;
-  };
+  project?: { title: string; link: string };
 }
 
 interface AcademyContextType {
@@ -61,16 +48,51 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const fetchData = useCallback(async () => {
     try {
+      // Initialize with our Master Curriculum
+      const masterCats = VIBECODING_CURRICULUM.map(m => ({
+        id: m.id,
+        name: m.name,
+        learningPath: 'beginner' as const,
+        isCertificationEnabled: true
+      }));
+
+      const masterVids = VIBECODING_CURRICULUM.flatMap((m, mIdx) => 
+        m.units.map((u, uIdx) => ({
+          id: u.id,
+          title: u.title,
+          description: u.description,
+          youtubeEmbedUrl: u.videoUrl,
+          categoryId: m.id,
+          order: (mIdx * 100) + uIdx,
+          isLocked: mIdx > 0 && uIdx > 0, // Unlock first module
+          isPublished: true,
+          ...u
+        }))
+      );
+
+      setCategories(masterCats);
+      setVideos(masterVids);
+      
+      // Optionally fetch from DB to append extras
       const [catsSnap, vidsSnap] = await Promise.all([
         getDocs(query(collection(db, "video_categories"), orderBy("createdAt", "desc"))),
         getDocs(query(collection(db, "videos"), orderBy("order", "asc")))
       ]);
 
-      const cats = catsSnap.docs.map(d => ({ id: d.id, ...d.data() } as VideoCategory));
-      const vids = vidsSnap.docs.map(d => ({ id: d.id, ...d.data() } as Video));
+      if (!catsSnap.empty) {
+        const extraCats = catsSnap.docs
+          .map(d => ({ id: d.id, ...d.data() } as VideoCategory))
+          .filter(c => !VIBECODING_CURRICULUM.find(m => m.id === c.id));
+        setCategories(prev => [...prev, ...extraCats]);
+      }
 
-      setCategories(cats);
-      setVideos(vids);
+      if (!vidsSnap.empty) {
+        const extraVids = vidsSnap.docs
+           .map(d => ({ id: d.id, ...d.data() } as Video))
+           .filter(v => !masterVids.find(mv => mv.id === v.id));
+        setVideos(prev => [...prev, ...extraVids]);
+      }
+
     } catch (error) {
       console.error("Academy Context Sync Error:", error);
     } finally {
@@ -80,22 +102,7 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     fetchData();
-
-    // Set up real-time sub for responsiveness on updates
-    const unsubCats = onSnapshot(collection(db, "video_categories"), (snap) => {
-       const cats = snap.docs.map(d => ({ id: d.id, ...d.data() } as VideoCategory));
-       setCategories(cats);
-    });
-
-    const unsubVids = onSnapshot(collection(db, "videos"), (snap) => {
-       const vids = snap.docs.map(d => ({ id: d.id, ...d.data() } as Video));
-       setVideos(vids.sort((a, b) => a.order - b.order));
-    });
-
-    return () => {
-       unsubCats();
-       unsubVids();
-    };
+    // Real-time subs temporarily disabled to prioritize Master Curriculum stability
   }, [fetchData]);
 
   return (
